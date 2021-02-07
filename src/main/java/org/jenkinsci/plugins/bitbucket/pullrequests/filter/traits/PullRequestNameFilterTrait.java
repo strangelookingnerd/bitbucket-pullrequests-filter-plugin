@@ -23,7 +23,6 @@
  */
 package org.jenkinsci.plugins.bitbucket.pullrequests.filter.traits;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
@@ -41,6 +40,7 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
+import javax.annotation.Nonnull;
 import java.util.regex.Pattern;
 
 /**
@@ -91,7 +91,7 @@ public class PullRequestNameFilterTrait extends SCMSourceTrait {
      * {@inheritDoc}
      */
     @Override
-    public boolean includeCategory(@NonNull SCMHeadCategory category) {
+    public boolean includeCategory(@Nonnull SCMHeadCategory category) {
         return category.isUncategorized();
     }
 
@@ -102,9 +102,9 @@ public class PullRequestNameFilterTrait extends SCMSourceTrait {
     protected void decorateContext(SCMSourceContext<?, ?> context) {
         StringFilter filter = createFilter();
         if (strategyId == 1) {
-            context.withFilter(new PullRequestTitlePhraseExistsFilter(filter));
-        } else if (strategyId == 2) {
             context.withFilter(new PullRequestTitlePhraseNotExistsFilter(filter));
+        } else if (strategyId == 2) {
+            context.withFilter(new PullRequestTitlePhraseExistsFilter(filter));
         }
     }
 
@@ -142,7 +142,7 @@ public class PullRequestNameFilterTrait extends SCMSourceTrait {
          *
          * @return the strategy options.
          */
-        @NonNull
+        @Nonnull
         @Restricted(NoExternalUse.class)
         @SuppressWarnings("unused") // stapler
         public ListBoxModel doFillStrategyIdItems() {
@@ -163,7 +163,7 @@ public class PullRequestNameFilterTrait extends SCMSourceTrait {
          * @param testMatcher The subject to validate by the pattern or the phrase
          * @return validation status
          */
-        @NonNull
+        @Nonnull
         @Restricted(NoExternalUse.class)
         public FormValidation doTestPhrase(@QueryParameter("phrase") final String phrase,
                                            @QueryParameter("ignoreCase") final boolean ignoreCase,

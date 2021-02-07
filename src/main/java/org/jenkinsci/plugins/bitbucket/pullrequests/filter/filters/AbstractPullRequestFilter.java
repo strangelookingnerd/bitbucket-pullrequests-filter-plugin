@@ -29,9 +29,10 @@ import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketPullRequest;
 import jenkins.scm.api.SCMHead;
 import jenkins.scm.api.trait.SCMHeadFilter;
 import jenkins.scm.api.trait.SCMSourceRequest;
-import org.eclipse.jgit.annotations.NonNull;
+import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.bitbucket.pullrequests.filter.utils.filters.TypeFilter;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -57,13 +58,20 @@ public abstract class AbstractPullRequestFilter<T> extends SCMHeadFilter {
      * {@inheritDoc}
      */
     @Override
-    public boolean isExcluded(@NonNull SCMSourceRequest request, @NonNull SCMHead head) throws IOException, InterruptedException {
+    public boolean isExcluded(@Nonnull SCMSourceRequest request, @Nonnull SCMHead head) throws IOException, InterruptedException {
         if (request instanceof BitbucketSCMSourceRequest && head instanceof PullRequestSCMHead) {
             BitbucketSCMSourceRequest req = (BitbucketSCMSourceRequest) request;
             for (BitbucketPullRequest pullRequest : req.getPullRequests()) {
                 if (pullRequest.getSource().getBranch().getName().equals(((PullRequestSCMHead) head).getBranchName())) {
                     BitbucketPullRequest fullPullRequest = req.getPullRequestById(Integer.parseInt(pullRequest.getId()));
-                    return !isAccepted(fullPullRequest);
+                    boolean isExluded = !isAccepted(fullPullRequest);
+                    if (isExluded) {
+                        String message = getMessage(fullPullRequest);
+                        if (StringUtils.isNotBlank(message)) {
+                            req.listener().getLogger().format("  %s%n", message);
+                        }
+                    }
+                    return isExluded;
                 }
             }
         }
@@ -102,5 +110,13 @@ public abstract class AbstractPullRequestFilter<T> extends SCMHeadFilter {
      * @return extracted data to validation
      */
     protected abstract T getData(BitbucketPullRequest pullRequest);
+
+    /**
+     * Prepare a message for user to logs.
+     *
+     * @param pullRequest the {@link BitbucketPullRequest}
+     * @return a message for user
+     */
+    protected abstract String getMessage(BitbucketPullRequest pullRequest);
 
 }

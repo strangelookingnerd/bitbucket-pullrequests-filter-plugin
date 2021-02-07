@@ -53,4 +53,11 @@ public class PullRequestTitlePhraseNotExistsFilter extends PullRequestTitlePhras
         return !super.isAccepted(pullRequest);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getMessage(BitbucketPullRequest pullRequest) {
+        return "The pull request contains one of blacklisted phrases or match the pattern to exclude. Skipped.";
+    }
 }

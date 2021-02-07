@@ -50,4 +50,11 @@ public class PullRequestTitlePhraseExistsFilter extends AbstractPullRequestFilte
         return pullRequest.getTitle();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getMessage(BitbucketPullRequest pullRequest) {
+        return "The pull request not contains any of required phrases or match the pattern. Skipped.";
+    }
 }
