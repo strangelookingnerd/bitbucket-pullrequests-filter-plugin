@@ -24,11 +24,20 @@
 package org.jenkinsci.plugins.bitbucket.pullrequests.filter.filters.title;
 
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketPullRequest;
+import jenkins.scm.api.SCMHead;
 import org.jenkinsci.plugins.bitbucket.pullrequests.filter.utils.filters.StringFilter;
 
-public class PullRequestNameNotExistsFilter extends PullRequestNameExistsFilter {
+/**
+ * A {@link SCMHead} filter to exclusion the pull requests due to contain any phrase.
+ *
+ * @since 0.1.0
+ */
+public class PullRequestTitlePhraseNotExistsFilter extends PullRequestTitlePhraseExistsFilter {
 
-    public PullRequestNameNotExistsFilter(StringFilter filter) {
+    /**
+     * {@inheritDoc}
+     */
+    public PullRequestTitlePhraseNotExistsFilter(StringFilter filter) {
         super(filter);
     }
 

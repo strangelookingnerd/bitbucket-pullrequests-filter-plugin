@@ -32,9 +32,10 @@ import jenkins.scm.api.trait.SCMSourceContext;
 import jenkins.scm.api.trait.SCMSourceTrait;
 import jenkins.scm.api.trait.SCMSourceTraitDescriptor;
 import jenkins.scm.impl.trait.Discovery;
-import org.jenkinsci.plugins.bitbucket.pullrequests.filter.filters.title.PullRequestNameExistsFilter;
-import org.jenkinsci.plugins.bitbucket.pullrequests.filter.filters.title.PullRequestNameNotExistsFilter;
+import org.jenkinsci.plugins.bitbucket.pullrequests.filter.filters.title.PullRequestTitlePhraseExistsFilter;
+import org.jenkinsci.plugins.bitbucket.pullrequests.filter.filters.title.PullRequestTitlePhraseNotExistsFilter;
 import org.jenkinsci.plugins.bitbucket.pullrequests.filter.utils.filters.StringFilter;
+import org.jenkinsci.plugins.bitbucket.pullrequests.filter.utils.filters.TypeFilter;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -43,7 +44,9 @@ import org.kohsuke.stapler.QueryParameter;
 import java.util.regex.Pattern;
 
 /**
- * A {@link Discovery} trait for GitHub that will blacklist pull requests matching any specified label.
+ * A {@link Discovery} trait for Bitbucket source that will blacklist pull requests matching any specified filter.
+ *
+ * @since 0.1.0
  */
 public class PullRequestNameFilterTrait extends SCMSourceTrait {
 
@@ -88,34 +91,38 @@ public class PullRequestNameFilterTrait extends SCMSourceTrait {
      * {@inheritDoc}
      */
     @Override
-    protected void decorateContext(SCMSourceContext<?, ?> context) {
-        StringFilter filter = createFilter();
-        if (strategyId == 1) {
-            context.withFilter(new PullRequestNameExistsFilter(filter));
-        } else if (strategyId == 2) {
-            context.withFilter(new PullRequestNameNotExistsFilter(filter));
-        }
-    }
-
-    protected StringFilter createFilter() {
-        try {
-            if (regex) {
-                int regexFlags = ignoreCase ? Pattern.CASE_INSENSITIVE : 0;
-                return new StringFilter(phrase != null ? Pattern.compile(phrase, regexFlags) : null);
-            }
-
-            return new StringFilter(phrase, ignoreCase);
-        } catch(Throwable t) {
-            return null;
-        }
+    public boolean includeCategory(@NonNull SCMHeadCategory category) {
+        return category.isUncategorized();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean includeCategory(@NonNull SCMHeadCategory category) {
-        return category.isUncategorized();
+    protected void decorateContext(SCMSourceContext<?, ?> context) {
+        StringFilter filter = createFilter();
+        if (strategyId == 1) {
+            context.withFilter(new PullRequestTitlePhraseExistsFilter(filter));
+        } else if (strategyId == 2) {
+            context.withFilter(new PullRequestTitlePhraseNotExistsFilter(filter));
+        }
+    }
+
+    /**
+     * Create a filter to validate the data of pull request.
+     *
+     * @return A {@link TypeFilter} instance to validate the extracted data from pull request.
+     */
+    protected StringFilter createFilter() {
+        try {
+            if (regex) {
+                int regexFlags = ignoreCase ? Pattern.CASE_INSENSITIVE : 0;
+                return new StringFilter(phrase != null ? Pattern.compile(phrase, regexFlags) : null);
+            }
+            return new StringFilter(phrase, ignoreCase);
+        } catch (Throwable t) {
+            return null;
+        }
     }
 
     @Extension
@@ -150,6 +157,10 @@ public class PullRequestNameFilterTrait extends SCMSourceTrait {
         /**
          * Validate the inputs
          *
+         * @param phrase      The phrase or the regular expression as pattern to matching
+         * @param ignoreCase  Ignore case sensitivity
+         * @param regex       Treat the phrase as regular expression
+         * @param testMatcher The subject to validate by the pattern or the phrase
          * @return validation status
          */
         @NonNull

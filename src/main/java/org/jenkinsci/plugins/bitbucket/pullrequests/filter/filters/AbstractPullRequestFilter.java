@@ -34,25 +34,35 @@ import org.jenkinsci.plugins.bitbucket.pullrequests.filter.utils.filters.TypeFil
 
 import java.io.IOException;
 
+/**
+ * A {@link SCMHead} filter to exclusion the pull requests due to not match by user filter.
+ *
+ * @param <T> data type to validation
+ * @since 0.1.0
+ */
 public abstract class AbstractPullRequestFilter<T> extends SCMHeadFilter {
 
     private final TypeFilter<T> filter;
 
+    /**
+     * Constructor.
+     *
+     * @param filter {@link TypeFilter} to validate the data
+     */
     protected AbstractPullRequestFilter(TypeFilter filter) {
         this.filter = filter;
     }
-
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean isExcluded(@NonNull SCMSourceRequest scmSourceRequest, @NonNull SCMHead scmHead) throws IOException, InterruptedException {
-        if (scmSourceRequest instanceof BitbucketSCMSourceRequest && scmHead instanceof PullRequestSCMHead) {
-            BitbucketSCMSourceRequest request = (BitbucketSCMSourceRequest) scmSourceRequest;
-            for (BitbucketPullRequest pullRequest : request.getPullRequests()) {
-                if (pullRequest.getSource().getBranch().getName().equals(((PullRequestSCMHead) scmHead).getBranchName())) {
-                    BitbucketPullRequest fullPullRequest = request.getPullRequestById(Integer.parseInt(pullRequest.getId()));
+    public boolean isExcluded(@NonNull SCMSourceRequest request, @NonNull SCMHead head) throws IOException, InterruptedException {
+        if (request instanceof BitbucketSCMSourceRequest && head instanceof PullRequestSCMHead) {
+            BitbucketSCMSourceRequest req = (BitbucketSCMSourceRequest) request;
+            for (BitbucketPullRequest pullRequest : req.getPullRequests()) {
+                if (pullRequest.getSource().getBranch().getName().equals(((PullRequestSCMHead) head).getBranchName())) {
+                    BitbucketPullRequest fullPullRequest = req.getPullRequestById(Integer.parseInt(pullRequest.getId()));
                     return !isAccepted(fullPullRequest);
                 }
             }
@@ -62,27 +72,34 @@ public abstract class AbstractPullRequestFilter<T> extends SCMHeadFilter {
     }
 
     /**
-     * @param pullRequest
-     * @return
+     * Validates the pull requests is accepted by the filter.
+     *
+     * @param pullRequest the {@link BitbucketPullRequest}
+     * @return {@code true} if and only if the pull requests was verified positive by the filter
      */
     protected boolean isAccepted(BitbucketPullRequest pullRequest) {
+        T data = getData(pullRequest);
         TypeFilter filter = getFilter();
         if (filter == null) {
             return true;
         }
-        return filter.accepted(getData(pullRequest));
+        return filter.accepted(data);
     }
 
     /**
-     * @return
+     * Return instance of a filter to validate the data.
+     *
+     * @return {@link TypeFilter} to validate the data
      */
-    protected TypeFilter getFilter() {
+    protected TypeFilter<T> getFilter() {
         return filter;
     }
 
     /**
-     * @param pullRequest
-     * @return
+     * Extracts data from pull requests to validate.
+     *
+     * @param pullRequest the {@link BitbucketPullRequest}
+     * @return extracted data to validation
      */
     protected abstract T getData(BitbucketPullRequest pullRequest);
 

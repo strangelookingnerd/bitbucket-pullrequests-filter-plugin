@@ -47,8 +47,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({PullRequestNameNotExistsFilter.class, BitbucketSCMSourceRequest.class})
-public class PullRequestNameNotExistsFilterTest {
+@PrepareForTest({PullRequestTitlePhraseExistsFilter.class, BitbucketSCMSourceRequest.class})
+public class PullRequestTitlePhraseExistsFilterTest {
 
     @Mock
     BitbucketSCMSourceRequest scmSourceRequest;
@@ -94,7 +94,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("Test", false)).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isTrue();
+        assertThat(isExcluded).isFalse();
     }
 
     @Test
@@ -106,7 +106,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("test", false)).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded).isTrue();
     }
 
     @Test
@@ -118,7 +118,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("test", true)).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isTrue();
+        assertThat(isExcluded).isFalse();
     }
 
     @Test
@@ -130,7 +130,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("$Test$")).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isTrue();
+        assertThat(isExcluded).isFalse();
     }
 
     @Test
@@ -142,7 +142,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("Test")).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isTrue();
+        assertThat(isExcluded).isFalse();
     }
 
     @Test
@@ -154,7 +154,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("t")).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded).isTrue();
     }
 
     @Test
@@ -166,7 +166,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("Test title")).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isTrue();
+        assertThat(isExcluded).isFalse();
     }
 
     @Test
@@ -178,7 +178,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("Test title")).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded).isTrue();
     }
 
     @Test
@@ -190,7 +190,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("Not exists")).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded).isTrue();
     }
 
     @Test
@@ -238,7 +238,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter(Pattern.compile("^Te??.*"))).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isTrue();
+        assertThat(isExcluded).isFalse();
     }
 
     @Test
@@ -250,7 +250,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter(Pattern.compile("^te??$"))).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded).isTrue();
     }
 
     @Test
@@ -262,7 +262,7 @@ public class PullRequestNameNotExistsFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter(Pattern.compile(""))).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded).isTrue();
     }
 
     @Test
@@ -278,7 +278,7 @@ public class PullRequestNameNotExistsFilterTest {
     }
 
     private SCMHeadFilter givenSCMHeadFilter(StringFilter filter) {
-        return new PullRequestNameNotExistsFilter(filter);
+        return new PullRequestTitlePhraseExistsFilter(filter);
     }
 
     private StringFilter givenFilter(Pattern pattern) {
