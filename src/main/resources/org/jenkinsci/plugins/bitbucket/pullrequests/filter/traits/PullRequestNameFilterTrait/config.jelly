@@ -21,7 +21,7 @@
     </f:entry>
 
     <f:entry title="Test sequence" field="testMatcher">
-         <f:textbox description="Title sample of a pull-request to verify if will match against this pattern or contains one of the phrases" />
+         <f:textbox />
     </f:entry>
 
     <f:validateButton title="${%Validate phrase}" progress="${%Validating...}"

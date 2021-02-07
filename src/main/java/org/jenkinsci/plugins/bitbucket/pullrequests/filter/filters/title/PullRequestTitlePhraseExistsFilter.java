@@ -57,4 +57,5 @@ public class PullRequestTitlePhraseExistsFilter extends AbstractPullRequestFilte
     protected String getMessage(BitbucketPullRequest pullRequest) {
         return "The pull request title not contains any of required phrases or match the pattern. Skipped.";
     }
+    
 }
