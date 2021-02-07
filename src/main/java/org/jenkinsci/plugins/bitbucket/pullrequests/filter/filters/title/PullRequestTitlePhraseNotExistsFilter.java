@@ -58,6 +58,6 @@ public class PullRequestTitlePhraseNotExistsFilter extends PullRequestTitlePhras
      */
     @Override
     protected String getMessage(BitbucketPullRequest pullRequest) {
-        return "The pull request contains one of blacklisted phrases or match the pattern to exclude. Skipped.";
+        return "The pull request title contains one of blacklisted phrases or match the pattern to exclude. Skipped.";
     }
 }

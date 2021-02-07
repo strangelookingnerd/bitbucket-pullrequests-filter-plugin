@@ -1,31 +1,30 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-  <f:entry title="${%Strategy}" field="strategyId">
-    <f:select default="1" />
-  </f:entry>
+    <f:entry title="${%Strategy}" field="strategyId">
+      <f:select default="1" />
+    </f:entry>
 
-    <f:entry title="Phrase" field="phrase">
-      <f:textbox default="wip, work in progress, skip ci, ci skip" />
+    <f:entry title="Phrase(s)" field="phrase">
+        <f:textbox default="wip, work in progress, skip ci, ci skip" />
     </f:entry>
 
     <f:entry title="Ignore case" field="ignoreCase">
-       <f:checkbox default="true" />
+         <f:checkbox default="true" />
     </f:entry>
 
-    <f:entry title="Regular Expression" field="regex">
-       <f:checkbox default="false" />
+    <f:entry title="Regular expression" field="regex">
+         <f:checkbox default="false" />
     </f:entry>
 
     <f:entry>
-      <hr />
+        <hr />
     </f:entry>
 
-    <f:entry title="Test matcher" field="testMatcher">
-       <f:textbox />
+    <f:entry title="Test sequence" field="testMatcher">
+         <f:textbox description="Title sample of a pull-request to verify if will match against this pattern or contains one of the phrases" />
     </f:entry>
 
     <f:validateButton title="${%Validate phrase}" progress="${%Validating...}"
-                                 method="testPhrase" with="phrase,ignoreCase,regex,testMatcher" />
-
+                      method="testPhrase" with="phrase,ignoreCase,regex,testMatcher" />
 </j:jelly>
  
