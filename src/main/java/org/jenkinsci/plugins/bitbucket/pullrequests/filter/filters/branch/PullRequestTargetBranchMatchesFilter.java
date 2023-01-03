@@ -29,17 +29,17 @@ import org.jenkinsci.plugins.bitbucket.pullrequests.filter.utils.filters.StringF
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketPullRequest;
 
 /**
- * A {@link SCMHead} filter to only include pull request that originate from specific branches.
+ * A {@link SCMHead} filter to only include pull request that target specific branches.
  * 
  * @since 0.2.0
  *
  */
-public class PullRequestSourceBranchMatchesFilter extends AbstractPullRequestFilter<String> {
+public class PullRequestTargetBranchMatchesFilter extends AbstractPullRequestFilter<String> {
 
     /**
      * {@inheritDoc}
      */
-	public PullRequestSourceBranchMatchesFilter(StringFilter filter) {
+	public PullRequestTargetBranchMatchesFilter(StringFilter filter) {
 		super(filter);
 	}
 
@@ -48,7 +48,7 @@ public class PullRequestSourceBranchMatchesFilter extends AbstractPullRequestFil
      */
 	@Override
 	protected String getData(BitbucketPullRequest pullRequest) {
-		return pullRequest.getSource().getBranch().getName();
+		return pullRequest.getDestination().getBranch().getName();
 	}
 
     /**
@@ -56,7 +56,7 @@ public class PullRequestSourceBranchMatchesFilter extends AbstractPullRequestFil
      */
 	@Override
 	protected String getMessage(BitbucketPullRequest pullRequest) {
-        return "The pull request does not originate from an allowlisted branch: '"+ pullRequest.getSource().getBranch().getName() + "' Skipped.";
+        return "The pull request does not target an allowlisted branch, instead: '"+ pullRequest.getDestination().getBranch().getName() + "' Skipped.";
 	}
 
 }
