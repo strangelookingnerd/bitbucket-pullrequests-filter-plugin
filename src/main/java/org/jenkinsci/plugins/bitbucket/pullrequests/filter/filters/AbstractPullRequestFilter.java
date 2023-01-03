@@ -50,7 +50,7 @@ public abstract class AbstractPullRequestFilter<T> extends SCMHeadFilter {
      *
      * @param filter {@link TypeFilter} to validate the data
      */
-    protected AbstractPullRequestFilter(TypeFilter filter) {
+    protected AbstractPullRequestFilter(TypeFilter<T> filter) {
         this.filter = filter;
     }
 
@@ -87,7 +87,7 @@ public abstract class AbstractPullRequestFilter<T> extends SCMHeadFilter {
      */
     protected boolean isAccepted(BitbucketPullRequest pullRequest) {
         T data = getData(pullRequest);
-        TypeFilter filter = getFilter();
+        TypeFilter<T> filter = getFilter();
         if (filter == null) {
             return true;
         }
