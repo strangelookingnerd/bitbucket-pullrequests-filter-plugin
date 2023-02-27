@@ -28,7 +28,7 @@ import org.jenkinsci.plugins.bitbucket.pullrequests.filter.utils.filters.StringF
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketPullRequest;
 
 /**
- * A {@link SCMHead} filter to exclude pull request that originate from specific branches.
+ * A {@link jenkins.scm.api.SCMHead} filter to exclude pull request that originate from specific branches.
  * 
  * @since 0.2.0
  *

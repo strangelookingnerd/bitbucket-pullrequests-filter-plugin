@@ -5,25 +5,24 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.0</version>
+        <version>4.49</version>
         <relativePath />
     </parent>
 
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>bitbucket-pullrequests-filter</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>${changelist}</version>
     <packaging>hpi</packaging>
 
     <properties>
-        <revision>0.1.0</revision>
-        <changelist>-SNAPSHOT</changelist>
+        <changelist>999999-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/bitbucket-pullrequests-filter-plugin</gitHubRepo>
+
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
-        <jenkins.version>2.164.3</jenkins.version>
-        <java.level>8</java.level>
+        <jenkins.version>2.332.4</jenkins.version>
 
         <!-- Plugins -->
-        <bitbucket-branch-source.version>2.4.1</bitbucket-branch-source.version>
+        <bitbucket-branch-source.version>796.v6cb_1559e1673</bitbucket-branch-source.version>
 
         <!-- Deps -->
         <powermock.version>2.0.9</powermock.version>
@@ -79,25 +78,33 @@
 
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
-            <artifactId>workflow-aggregator</artifactId>
-            <version>2.2</version>
+            <artifactId>workflow-basic-steps</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>branch-api</artifactId>
-            <version>2.0.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>${powermock.version}</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito2</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
@@ -111,12 +118,12 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- setting transitive dependencies version to comply with the maven-enforcer-plugin RequireUpperBoundDeps rule-->
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-core</artifactId>
-                <version>2.2</version>
-                <scope>test</scope>
+           <dependency>
+                <groupId>io.jenkins.tools.bom</groupId>
+                <artifactId>bom-2.332.x</artifactId>
+                <version>1763.v092b_8980a_f5e</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
