@@ -23,9 +23,6 @@
  */
 package org.jenkinsci.plugins.bitbucket.pullrequests.filter.filters.branch;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.powermock.api.mockito.PowerMockito.when;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -36,8 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSourceRequest;
 import com.cloudbees.jenkins.plugins.bitbucket.PullRequestSCMHead;
@@ -48,9 +43,13 @@ import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketPullRequestSource;
 
 import hudson.model.TaskListener;
 import jenkins.scm.api.trait.SCMHeadFilter;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({PullRequestSourceBranchNotMatchesFilter.class, BitbucketSCMSourceRequest.class})
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
 public class PullRequestTargetBranchNotMatchesFilterTest {
 
 
@@ -91,7 +90,6 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         when(pullRequestSource.getBranch()).thenReturn(sourceBranch);
         when(sourceBranch.getName()).thenReturn("dummy");
         when(pullRequestSCMHead.getBranchName()).thenReturn("dummy");
-        when(pullRequestSCMHead.getId()).thenReturn("1");
         when(scmSourceRequest.listener()).thenReturn(taskListener);
         when(scmSourceRequest.getPullRequests()).thenReturn(Arrays.asList(pullRequest));
         when(scmSourceRequest.getPullRequestById(1)).thenReturn(pullRequest);
@@ -109,7 +107,7 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("Test", false)).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isTrue();
+        assertThat(isExcluded, is(true));
     }
 
     @Test
@@ -121,7 +119,7 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("test", false)).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded, is(false));
     }
 
     @Test
@@ -133,7 +131,7 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("test", true)).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isTrue();
+        assertThat(isExcluded, is(true));
     }
 
     @Test
@@ -145,7 +143,7 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("t")).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded, is(false));
     }
 
     @Test
@@ -157,7 +155,7 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("not-the-same")).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded, is(false));
     }
 
     @Test
@@ -169,7 +167,7 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter("")).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded, is(false));
     }
 
     @Test
@@ -181,7 +179,7 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter((String) null)).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded, is(false));
     }
 
     @Test
@@ -193,7 +191,7 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter(Pattern.compile("^Te??.*"))).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isTrue();
+        assertThat(isExcluded, is(true));
     }
 
     @Test
@@ -205,7 +203,7 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter(Pattern.compile("^te??$"))).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded, is(false));
     }
 
     @Test
@@ -217,7 +215,7 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter(Pattern.compile(""))).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded, is(false));
     }
 
     @Test
@@ -229,7 +227,7 @@ public class PullRequestTargetBranchNotMatchesFilterTest {
         boolean isExcluded = givenSCMHeadFilter(givenFilter((Pattern) null)).isExcluded(scmSourceRequest, pullRequestSCMHead);
 
         // then
-        assertThat(isExcluded).isFalse();
+        assertThat(isExcluded, is(false));
     }
 
     private SCMHeadFilter givenSCMHeadFilter(StringFilter filter) {
